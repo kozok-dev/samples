@@ -1,0 +1,5 @@
+#include <windows.h>
+
+1 DIALOG 0, 0, 200, 50 STYLE WS_CHILD | WS_CLIPSIBLINGS
+{
+}

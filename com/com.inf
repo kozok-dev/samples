@@ -1,0 +1,12 @@
+[version]
+signature="$chicago$"
+advancedinf=2.0
+
+[add.code]
+com.dll=com.dll
+
+[comtest.dll]
+file-win32-x86=thiscab
+;fileversion=0,0,0,0
+;destdir=
+registerserver=yes

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="shift_jis" ?>
+<doc>
+	<title>Title Here</title>
+	<author>
+		<firstname>Firstname</firstname>
+		<lastname>Lastname</lastname>
+	</author>
+
+	<paragraph>
+		<line n="1">First line.</line>
+		<line n="2">Second line.</line>
+	</paragraph>
+	<paragraph>
+		<line n="3" p="Dmy">Third line.</line>
+		<line n="4">Fourth line.</line>
+	</paragraph>
+</doc>

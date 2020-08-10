@@ -1,0 +1,126 @@
+<html>
+
+<head>
+<script language="JavaScript"><!--
+//画像の先読み
+n01=new Image(); n01.src="n_std.gif";
+n02=new Image(); n02.src="n_up1.gif";
+n03=new Image(); n03.src="n_up2.gif";
+n04=new Image(); n04.src="n_down1.gif";
+n05=new Image(); n05.src="n_down2.gif";
+n06=new Image(); n06.src="n_left1.gif";
+n07=new Image(); n07.src="n_left2.gif";
+n08=new Image(); n08.src="n_right1.gif";
+n09=new Image(); n09.src="n_right2.gif";
+n10=new Image(); n10.src="n_upleft1.gif";
+n11=new Image(); n11.src="n_upleft2.gif";
+n12=new Image(); n12.src="n_upright1.gif";
+n13=new Image(); n13.src="n_upright2.gif";
+n14=new Image(); n14.src="n_downleft1.gif";
+n15=new Image(); n15.src="n_downleft2.gif";
+n16=new Image(); n16.src="n_downright1.gif";
+n17=new Image(); n17.src="n_downright2.gif";
+
+var mx=100,my=100;
+var ex,ey;
+var mn=new Array(7);
+for(i=0;i<8;i++) mn[i]=1;
+
+//自動移動
+function AMove() {
+    //移動距離の調整
+    if(ex-neko.style.posLeft>500 || ex-neko.style.posLeft<-500 || ey-neko.style.posTop>400 || ey-neko.style.posTop<-400) ms=10;
+    else if(ex-neko.style.posLeft>300 || ex-neko.style.posLeft<-300 || ey-neko.style.posTop>200 || ey-neko.style.posTop<-200) ms=7;
+    else if(ex-neko.style.posLeft>200 || ex-neko.style.posLeft<-200 || ey-neko.style.posTop>200 || ey-neko.style.posTop<-200) ms=5;
+    else if(ex-neko.style.posLeft>15 || ex-neko.style.posLeft<-15 || ey-neko.style.posTop>15 || ey-neko.style.posTop<-15) ms=3;
+    else ms=1;
+
+    if(ex-neko.style.posLeft<50 && ex-neko.style.posLeft>-50 && ey<neko.style.posTop) NekoMove(0,"n02","n03");
+    else if(ex-neko.style.posLeft<50 && ex-neko.style.posLeft>-50 && ey>neko.style.posTop) NekoMove(1,"n04","n05");
+    else if(ey-neko.style.posTop<50 && ey-neko.style.posTop>-50 && ex<neko.style.posLeft) NekoMove(2,"n06","n07");
+    else if(ey-neko.style.posTop<50 && ey-neko.style.posTop>-50 && ex>neko.style.posLeft) NekoMove(3,"n08","n09");
+    else if(ex-neko.style.posLeft<=-50 && ey<neko.style.posTop) NekoMove(4,"n10","n11");
+    else if(ex-neko.style.posLeft>=50 && ey<neko.style.posTop) NekoMove(5,"n12","n13");
+    else if(ex-neko.style.posLeft<=-50 && ey>neko.style.posTop) NekoMove(6,"n14","n15");
+    else if(ex-neko.style.posLeft>=50 && ey>neko.style.posTop) NekoMove(7,"n16","n17");
+    else neko.src=n01.src;
+
+    if(ex>neko.style.posLeft) {
+        if(ex!=neko.style.posLeft) {
+            mx+=ms;
+            neko.style.posLeft=mx;
+        }
+    }
+    if(ex<neko.style.posLeft) {
+        if(ex!=neko.style.posLeft) {
+            mx-=ms;
+            neko.style.posLeft=mx;
+        }
+    }
+    if(ey>neko.style.posTop) {
+        if(ey!=neko.style.posTop) {
+            my+=ms;
+            neko.style.posTop=my;
+        }
+    }
+    if(ey<neko.style.posTop) {
+        if(ey!=neko.style.posTop) {
+            my-=ms;
+            neko.style.posTop=my;
+        }
+    }
+    setTimeout("AMove()",50);
+}
+
+//マウスを動かすことによって移動
+function MMove() {
+    ex=event.x-neko.style.pixelWidth/2;	//マウスのX座標の取得と微調整
+    ey=event.y-neko.style.pixelHeight-10;	//マウスのY座標の取得と微調整
+
+    if(ex>neko.style.posLeft) {
+        if(ex!=neko.style.posLeft) {
+            mx++;
+            neko.style.posLeft=mx;
+        }
+    }
+    if(ex<neko.style.posLeft) {
+        if(ex!=neko.style.posLeft) {
+            mx--;
+            neko.style.posLeft=mx;
+        }
+    }
+    if(ey>neko.style.posTop) {
+        if(ey!=neko.style.posTop) {
+            my++;
+            neko.style.posTop=my;
+        }
+    }
+    if(ey<neko.style.posTop) {
+        if(ey!=neko.style.posTop) {
+            my--;
+            neko.style.posTop=my;
+        }
+    }
+}
+
+function NekoMove(nno,tar1,tar2) {
+    if(mn[nno]<=5) {
+        neko.src=eval(tar1).src;
+        mn[nno]++;
+    } else {
+        neko.src=eval(tar2).src;
+        if(mn[nno]==10) mn[nno]=1;
+        else mn[nno]++;
+    }
+}
+
+document.onmousemove=MMove;
+//--></script>
+</head>
+
+<body onload="AMove()">
+<p><b><font color="#373737" size="5">マウスを追いかける猫</font></b></p>
+<hr>
+<img id="neko" style="position:absolute;top:100;left:100;width:32;height:32;" src="n_std.gif" width="32" height="32">
+</body>
+</html>

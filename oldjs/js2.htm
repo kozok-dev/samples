@@ -1,0 +1,37 @@
+<html>
+
+<head>
+<script language="JavaScript"><!--
+num=15;	//個数
+img="play.gif";	//画像のパス(相対パス)
+wid=32;	//画像の幅
+hei=32;	//画像の高さ
+move=5;	//移動量
+interval=50;	//インターバル
+prob=0.3;	//移動率(0.0～1.0)
+//--></script>
+</head>
+
+<body onload="Move()">
+<p><b><font color="#373737" size="5">虫のように動かす</font></b></p>
+<hr>
+<script language="JavaScript"><!--
+for(i=0;i<num;i++) document.write("<img id='bg' style='position:absolute;left:0;top:"+-hei+";z-index:-1;' src='"+img+"' width='"+wid+"' height='"+hei+"'>");
+
+function Move() {
+    for(i=0;i<num;i++) {
+        if(Math.random()>=prob) continue;
+        if(bg[i].style.posTop==-hei) {
+            bg[i].style.posLeft=Math.floor(Math.random()*(document.body.clientWidth-wid));
+            bg[i].style.posTop+=move;
+        } else if(bg[i].style.posTop>=document.body.clientHeight+wid) {
+            bg[i].style.posTop=-hei;
+        } else {
+            bg[i].style.posTop+=move;
+        }
+    }
+    setTimeout("Move()",interval);
+}
+//--></script>
+</body>
+</html>

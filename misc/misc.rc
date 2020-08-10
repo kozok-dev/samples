@@ -1,0 +1,2 @@
+#define testbmp 1000
+testbmp BITMAP "misc.bmp"

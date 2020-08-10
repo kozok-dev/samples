@@ -1,0 +1,6 @@
+LIBRARY
+SECTIONS
+	.sha READ WRITE SHARED
+EXPORTS
+	setHook
+	unHook

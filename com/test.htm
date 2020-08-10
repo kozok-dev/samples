@@ -1,0 +1,8 @@
+<object id="test" classid="clsid:d1fca0e1-823e-4585-ac9f-2f847d6276f1" codebase="com.cab"></object>
+<script language="VBScript">
+Sub comtest_onClick()
+	a = test.ArrayTest
+	MsgBox IsArray(a) & " : " & UBound(a), 0, "COMTest"
+End Sub
+</script>
+<input type="button" name="comtest" value="Test">
