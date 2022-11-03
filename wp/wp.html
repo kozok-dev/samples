@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Wallpaper</title>
+<style>
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #000;
+	font-family: sans-serif;
+}
+.wallpaper {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: #000;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	display: none;
+}
+.navi {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+	z-index: 2;
+}
+.navi a {
+	color: #fff;
+	font-weight: bold;
+	text-decoration: none;
+	display: none;
+}
+.dialog {
+	margin: auto;
+	position: absolute;
+	width: 70%;
+	height: 60%;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+	overflow: auto;
+	z-index: 3;
+	display: none;
+	border: 5px solid rgba(0, 0, 0, 0);
+}
+.thumb {
+	margin: 1% 0 0 1%;
+	width: 18.5%;
+	height: 25%;
+	background-color: #000;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	border: 1px solid #000;
+	float: left;
+}
+.thumb:hover, .thumb.active {
+	border: 1px solid #fff;
+}
+.thumb_padding {
+	margin: 1%;
+	width: 1px;
+	height: 1px;
+	clear: both;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-color/2.1.2/jquery.color.min.js"></script>
+<script>
+$(function () {
+	// https://github.com/benanne/jquery-mouse-capture-plugin
+	$.fn.mousecapture=function(n){var u=$(document);return this.each((function(){var o=$(this),e={};o.mousedown((function(t){var c,m;n.move&&(c=function(u){n.move.call(o,u,e)},u.mousemove(c));var i=function(){n.move&&u.unbind("mousemove",c),u.unbind("mouseup",m)};return m=n.up?function(u){return i(),n.up.call(o,u,e)}:i,u.mouseup(m),n.down.call(o,t,e)}))})),this};
+
+	$.ajax({
+		url: "wp.txt"
+		, cache: false
+		, success: function (data) {
+			var imgpathlist = data.split(/\r\n|\r|\n/);
+			for (var i in imgpathlist) {
+				if (imgpathlist[i] != "") {
+					$(".wallpaper_container").append("<div class=\"wallpaper\" style=\"background-image: url('" + imgpathlist[i] + "');\"></div>");
+				}
+			}
+			init();
+		}
+		, xhr: function () {
+			if ("ActiveXObject" in window) {
+				return new ActiveXObject("Microsoft.XMLHTTP");
+			} else {
+				return new XMLHttpRequest();
+			}
+		}
+	});
+});
+
+function init() {
+	$rndSel(".wallpaper").addClass("active").fadeIn(slideshow);
+	var timer = null;
+	function slideshow() {
+		if (timer != null || dragy != null) return;
+		timer = setInterval(function () {
+			if (dragy == null) $rndSel(".thumb[data-nonslideshow!=1]").trigger('click', [true]);
+		}, 3000);
+	}
+
+	$(".wallpaper").each(function () {
+		$(".dialog").append("<a href='#' class='thumb'></a>")
+		.find('.thumb:last').css("background-image", $(this).css("background-image"));
+	});
+	$(".dialog").append("<div class='thumb_padding'></div>");
+	activeThumb();
+
+	var dragy = null;
+	$(".wallpaper").mousecapture({
+		"down": function (event) {
+			if (event.which != 1) return;
+			dragy = event.pageY;
+		}, "up": function () {
+			clearInterval(timer);
+			timer = dragy = null;
+			slideshow();
+		}, "move": function (event) {
+			if (dragy == null) return;
+
+			var pos = $(this).css("background-position").split(" ");
+			pos[1] = pos[1] == null ? 0 : parseInt(pos[1]);
+			$(this).css("background-position-y", pos[1] + (event.pageY - dragy));
+
+			dragy = event.pageY;
+		}
+	});
+
+	$(".prev").click(function () {
+		var $wallpaper_active = $(".wallpaper.active").removeClass("active").stop(false, true);
+		var $wallpaper_active_prev = $wallpaper_active.prev(".wallpaper");
+		if ($wallpaper_active_prev.length == 0) $wallpaper_active_prev = $(".wallpaper:last");
+
+		$(".dialog:visible").not(":animated").fadeOut();
+		clearInterval(timer);
+		timer = null;
+
+		$wallpaper_active_prev.addClass("active").css("z-index", "1").stop(false, true).fadeIn(function () {
+			$wallpaper_active.hide();
+			$wallpaper_active_prev.css("z-index", "0");
+			slideshow();
+		});
+		activeThumb();
+
+		return false;
+	});
+
+	$(".next").click(function () {
+		var $wallpaper_active = $(".wallpaper.active").removeClass("active").stop(false, true);
+		var $wallpaper_active_next = $wallpaper_active.next(".wallpaper");
+		if ($wallpaper_active_next.length == 0) $wallpaper_active_next = $(".wallpaper:first");
+
+		$(".dialog:visible").not(":animated").fadeOut();
+		clearInterval(timer);
+		timer = null;
+
+		$wallpaper_active_next.addClass("active").css("z-index", "1").stop(false, true).fadeIn(function () {
+			$wallpaper_active.hide();
+			$wallpaper_active_next.css("z-index", "0");
+			slideshow();
+		});
+		activeThumb();
+
+		return false;
+	});
+
+	var last_thumb_index = 0;
+	$(".thumb").click(function (event, auto) {
+		var thumb_index = $(".thumb").index(this);
+
+		if (event.which == 2) {
+			var $obj;
+			if (event.shiftKey) {
+				if (last_thumb_index < thumb_index) {
+					$obj = $(".thumb").slice(last_thumb_index, thumb_index + 1);
+				} else {
+					$obj = $(".thumb").slice(thumb_index, last_thumb_index + 1);
+				}
+			} else {
+				$obj = $(this);
+			}
+
+			if ($(this).attr("data-nonslideshow") == "1") {
+				$obj.removeAttr("data-nonslideshow").stop(false, true).animate({"opacity": "1"});
+			} else {
+				$obj.attr("data-nonslideshow", "1").stop(false, true).animate({"opacity": "0.3"});
+			}
+
+			last_thumb_index = thumb_index;
+			return false;
+		}
+
+		var $wallpaper_active = $(".wallpaper.active");
+		var $wallpaper_active_next = $(".wallpaper").eq(thumb_index);
+		if ($wallpaper_active.get(0) == $wallpaper_active_next.get(0)) return false;
+
+		if (!auto) $(".dialog:visible").not(":animated").fadeOut();
+		clearInterval(timer);
+		timer = null;
+
+		$wallpaper_active.removeClass("active").stop(false, true);
+		$wallpaper_active_next.addClass("active").css("z-index", "1").stop(false, true).fadeIn(function () {
+			$wallpaper_active.hide();
+			$wallpaper_active_next.css("z-index", "0");
+			slideshow();
+		});
+		activeThumb();
+
+		return false;
+	});
+
+	$(".navi").mouseover(function () {
+		$(this).children().stop(true).fadeIn();
+	});
+	$(".navi").mouseout(function () {
+		$(this).children().stop(true).fadeOut();
+	});
+
+	$(".sel").click(function () {
+		$(".dialog").stop(false, true).fadeToggle();
+		return false;
+	});
+	$(document).click(function (event) {
+		if ($(event.target).closest(".dialog").length == 0) $(".dialog").stop(true).fadeOut();
+	});
+
+	$(document).dblclick(function () {
+		clearInterval(timer);
+		timer = null;
+		$(".navi a").css("color", "#000").stop(true).animate({"color": "#fff"});
+	});
+
+	$(document).keydown(function (event) {
+		switch (event.which) {
+		case 32:
+			$(".sel").click();
+			break;
+		case 37:
+			$(".prev").click();
+			break;
+		case 38:
+			$(".wallpaper, .thumb").css("background-size", $(".wallpaper:first").css("background-size") == "cover" ? "contain" : "cover");
+			break;
+		case 39:
+			$(".next").click();
+			break;
+		}
+	});
+
+	function activeThumb() {
+		$(".thumb.active").removeClass("active");
+		$(".thumb").eq($(".wallpaper").index($(".wallpaper.active"))).addClass("active");
+	}
+
+	function $rndSel(sel) {
+		return $(sel).eq(Math.floor(Math.random() * $(sel).length));
+	}
+}
+</script>
+</head>
+
+<body>
+<div class="wallpaper_container"></div>
+<div class="navi">
+<a href="#" class="prev">＜</a>　　<a href="#" class="sel">●</a>　　<a href="#" class="next">＞</a>
+</div>
+<div class="dialog"></div>
+</body>
+</html>

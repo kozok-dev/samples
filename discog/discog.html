@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Discography</title>
+<style>
+body {
+	margin: 0;
+	color: #111;
+	background-color: #fee;
+	font-family: sans-serif;
+}
+h2 {
+	margin: 5px 0;
+	width: 100%;
+	font-size: 130%;
+}
+h3 {
+	margin: 5px 0;
+	color: #777;
+	font-size: 100%;
+	font-weight: normal;
+}
+p {
+	margin: 5px 0;
+}
+img {
+	max-width: 100%;
+	
+}
+ol {
+	margin: 5px 0;
+}
+.work:not(.detail) {
+	float: left;
+	line-height: 0;
+}
+.work:not(.detail) .desc {
+	display: none;
+}
+.work.detail {
+	margin: 0 auto;
+	padding: 10px;
+	width: 100%;
+	max-width: 1020px;
+	background-color: #fff;
+	box-sizing: border-box;
+	clear: both;
+}
+.work img {
+	width: 300px;
+}
+.image {
+	font-size: 0;
+}
+.image img {
+	width: 100px;
+}
+</style>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+	document.querySelectorAll(".work > img").forEach(elem => {
+		elem.addEventListener("click", function () {
+			this.parentNode.classList.toggle("detail");
+		});
+	});
+
+	document.querySelectorAll(".image img").forEach(elem => {
+		elem.addEventListener("click", function () {
+			for (const elem of this.closest(".work").children) {
+				if (elem.tagName == "IMG") elem.setAttribute("src", this.getAttribute("src"));
+			}
+		});
+	});
+});
+</script>
+</head>
+<body>
+
+<div class="work">
+	<img src="img1.jpg">
+	<div class="desc">
+		<div class="image">
+			<img src="img1.jpg">
+			<img src="img2.jpg">
+			<img src="img3.jpg">
+		</div>
+		<h2>アルバム1</h2>
+		<h3>Album XXXX-XX-XX</h3>
+		<p>説明テキスト。説明テキスト。説明テキスト。説明テキスト。説明テキスト。</p>
+		<ol>
+			<li>Music 1</li>
+			<li>Music 2</li>
+			<li>Music 3</li>
+			<li>Music 4</li>
+			<li>Music 5</li>
+			<li>Music 6</li>
+			<li>Music 7</li>
+			<li>Music 8</li>
+			<li>Music 9</li>
+			<li>Music 10</li>
+		</ol>
+		<p>- Bonus Track -</p>
+		<ol>
+			<li>Music 1</li>
+			<li>Music 2</li>
+			<li>Music 3</li>
+			<li>Music 4</li>
+			<li>Music 5</li>
+		</ol>
+	</div>
+</div>
+
+<div class="work">
+	<img src="img2.jpg">
+	<div class="desc">
+		<h2>アルバム2</h2>
+		<h3>Album XXXX-XX-XX</h3>
+		<ol>
+			<li>Music 1</li>
+			<li>Music 2</li>
+			<li>Music 3</li>
+			<li>Music 4</li>
+			<li>Music 5</li>
+			<li>Music 6</li>
+			<li>Music 7</li>
+			<li>Music 8</li>
+			<li>Music 9</li>
+			<li>Music 10</li>
+		</ol>
+	</div>
+</div>
+
+<div class="work">
+	<img src="img3.jpg">
+	<div class="desc">
+		<h2>アルバム3</h2>
+		<h3>Album XXXX-XX-XX</h3>
+		<ol>
+			<li>Music 1</li>
+			<li>Music 2</li>
+			<li>Music 3</li>
+			<li>Music 4</li>
+			<li>Music 5</li>
+			<li>Music 6</li>
+			<li>Music 7</li>
+			<li>Music 8</li>
+			<li>Music 9</li>
+			<li>Music 10</li>
+		</ol>
+	</div>
+</div>
+
+<div class="work">
+	<img src="img4.jpg">
+	<div class="desc">
+		<h2>アルバム4</h2>
+		<h3>Album XXXX-XX-XX</h3>
+		<ol>
+			<li>Music 1</li>
+			<li>Music 2</li>
+			<li>Music 3</li>
+			<li>Music 4</li>
+			<li>Music 5</li>
+			<li>Music 6</li>
+			<li>Music 7</li>
+			<li>Music 8</li>
+			<li>Music 9</li>
+			<li>Music 10</li>
+		</ol>
+	</div>
+</div>
+
+<div class="work">
+	<img src="img5.jpg">
+	<div class="desc">
+		<h2>アルバム5</h2>
+		<h3>Album XXXX-XX-XX</h3>
+		<ol>
+			<li>Music 1</li>
+			<li>Music 2</li>
+			<li>Music 3</li>
+			<li>Music 4</li>
+			<li>Music 5</li>
+			<li>Music 6</li>
+			<li>Music 7</li>
+			<li>Music 8</li>
+			<li>Music 9</li>
+			<li>Music 10</li>
+		</ol>
+	</div>
+</div>
+
+<div class="work">
+	<img src="img6.jpg">
+	<div class="desc">
+		<h2>アルバム6</h2>
+		<h3>Album XXXX-XX-XX</h3>
+		<ol>
+			<li>Music 1</li>
+			<li>Music 2</li>
+			<li>Music 3</li>
+			<li>Music 4</li>
+			<li>Music 5</li>
+			<li>Music 6</li>
+			<li>Music 7</li>
+			<li>Music 8</li>
+			<li>Music 9</li>
+			<li>Music 10</li>
+		</ol>
+	</div>
+</div>
+
+<div class="work">
+	<img src="img7.jpg">
+	<div class="desc">
+		<h2>アルバム7</h2>
+		<h3>Album XXXX-XX-XX</h3>
+		<ol>
+			<li>Music 1</li>
+			<li>Music 2</li>
+			<li>Music 3</li>
+			<li>Music 4</li>
+			<li>Music 5</li>
+			<li>Music 6</li>
+			<li>Music 7</li>
+			<li>Music 8</li>
+			<li>Music 9</li>
+			<li>Music 10</li>
+		</ol>
+	</div>
+</div>
+
+<div class="work">
+	<img src="img8.jpg">
+	<div class="desc">
+		<h2>アルバム8</h2>
+		<h3>Album XXXX-XX-XX</h3>
+		<ol>
+			<li>Music 1</li>
+			<li>Music 2</li>
+			<li>Music 3</li>
+			<li>Music 4</li>
+			<li>Music 5</li>
+			<li>Music 6</li>
+			<li>Music 7</li>
+			<li>Music 8</li>
+			<li>Music 9</li>
+			<li>Music 10</li>
+		</ol>
+	</div>
+</div>
+
+<div class="work">
+	<img src="img9.jpg">
+	<div class="desc">
+		<h2>DJミックス1</h2>
+		<h3>DJ-Mix XXXX-XX-XX</h3>
+		<ol>
+			<li>[00:00] Music 1</li>
+			<li>[00:30] Music 2</li>
+			<li>[01:00] Music 3</li>
+			<li>[01:30] Music 4</li>
+			<li>[02:00] Music 5</li>
+			<li>[02:30] Music 6</li>
+			<li>[03:00] Music 7</li>
+			<li>[03:30] Music 8</li>
+			<li>[04:00] Music 9</li>
+			<li>[04:30] Music 10</li>
+		</ol>
+	</div>
+</div>
+
+<div class="work">
+	<img src="img10.jpg">
+	<div class="desc">
+		<h2>DJミックス2</h2>
+		<h3>DJ-Mix XXXX-XX-XX</h3>
+		<ol>
+			<li>[0:00:00] Music 1</li>
+			<li>[0:05:30] Music 2</li>
+			<li>[0:10:00] Music 3</li>
+			<li>[0:20:30] Music 4</li>
+			<li>[0:30:00] Music 5</li>
+			<li>[0:40:30] Music 6</li>
+			<li>[0:50:00] Music 7</li>
+			<li>[1:00:30] Music 8</li>
+			<li>[1:05:00] Music 9</li>
+			<li>[1:10:30] Music 10</li>
+		</ol>
+	</div>
+</div>
+
+</body>
+</html>
