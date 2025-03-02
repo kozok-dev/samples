@@ -1,0 +1,51 @@
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-script-type" content="text/javascript">
+<title>layout</title>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prototype/1.7.3/prototype.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<!--[if IE]><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/excanvas@1.0.0/excanvas.compiled.js"></script><![endif]-->
+<script type="text/javascript" src="layout_grid.js"></script>
+<script type="text/javascript" src="layout_object.js"></script>
+<script type="text/javascript" src="layout_polygon.js"></script>
+<script type="text/javascript" src="layout_rectangle.js"></script>
+<script type="text/javascript" src="panel.js"></script>
+<script type="text/javascript" src="panel_list.js"></script>
+<script type="text/javascript"><!--
+jQuery.noConflict();
+function init() {
+	var canvas = $("canvas");
+
+	LayoutGrid.init(canvas, [
+		new LayoutRectangle("2,2:23,16", {
+			point: false
+			, line: 1
+			, name: "point1"
+		})
+		, new LayoutPolygon("2,2:8,2:8,7:15,7:15,3:23,3:23,17:22,17:22,16:15,16:15,8:8,9:8,14:1,14:2,13:2,6:5,5:2,3:2,2", {
+			name: "point2"
+			, inner: 1
+		})
+	]);
+
+	PanelList.init(canvas);
+	var panel = PanelList.getInfo("60,150,89,121:90,180,343,103");
+	for (var i = 0; i < panel.length; i++) PanelList.add(panel[i].width, panel[i].height, panel[i].x, panel[i].y, true);
+}
+// --></script>
+</head>
+<body onload="init()">
+<form>
+<input type="button" value="クリア" onclick="if (LayoutGrid.isInit()) LayoutGrid.reset()">
+<input type="button" value="1つ戻す" onclick="if (LayoutGrid.isInit()) LayoutGrid.undo()">
+幅<input type="text" name="width" size="3" maxlength="3">
+高さ<input type="text" name="height" size="3" maxlength="3">
+<input type="button" value="パネル追加" onclick="PanelList.add(this.form.width.value, this.form.height.value)">
+<input type="button" value="パネル削除" onclick="PanelList.removeSelected()">
+<br>
+<div><canvas id="canvas" width="513" height="413"></canvas></div>
+</form>
+</body>
+</html>
