@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,user-scalable=no">
+<title>🧠男脳・女脳テスト</title>
+<style>
+body {
+	margin: 0;
+	padding: 8px;
+	height: calc(100vh - 16px);
+	color: #003;
+	background: linear-gradient(135deg, #dff, #fff);
+	font-family: sans-serif;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+@media (min-width: 1100px) {
+	body {
+		font-size: 150%;
+	}
+}
+
+h1 {
+	margin: 0;
+	font-size: 150%;
+	text-align: center;
+}
+h1 span {
+	color: transparent;
+	background: linear-gradient(135deg, #335, #cfc);
+	background-clip: text;
+}
+.desc {
+	margin: 20px auto;
+	max-width: 1000px;
+}
+
+.question {
+	margin: 0;
+	padding: 0 0 1em;
+}
+.question > li {
+	margin: 20px auto;
+	padding: 10px;
+	max-width: 1000px;
+	background: linear-gradient(135deg, #eef, #bfe);
+	list-style-type: none;
+	border-radius: 10px;
+	box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.1);
+}
+.question > li ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.question > li .choice label > div {
+	position: relative;
+	margin: 10px 0 0;
+	padding: 10px;
+	width: calc(100% - 20px);
+	background-color: rgba(0, 0, 128, 0.1);
+	border-radius: 5px;
+	cursor: pointer;
+}
+.question > li .choice label > div:hover {
+	background-color: rgba(0, 0, 128, 0.2);
+}
+.question > li .choice label > div > div {
+	position: relative;
+	width: calc(100% - 1.2em);
+	left: 1.2em;
+}
+
+.question > li .choice input {
+	position: absolute;
+	display: none;
+}
+.question > li .choice input:checked + div {
+	background-color: rgba(0, 0, 128, 0.2);
+}
+.question > li .choice input:checked + div:before {
+	content: "✔";
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #05a;
+}
+.title {
+	display: flex;
+}
+
+#modal {
+	position: fixed;
+	inset: 0;
+	background: rgba(255, 255, 255, 0.5);
+	display: none;
+	backdrop-filter: blur(2px);
+}
+#modal .modalContent {
+	position: absolute;
+	padding: 20px 0;
+	width: 95%;
+	max-width: 700px;
+	top: 50%;
+	left: 50%;
+	background: linear-gradient(135deg, #fff, #bfe);
+	transform: translate(-50%, -50%);
+	border-radius: 10px;
+	box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.2);
+}
+#modal.show .modalContent {
+	animation: fadeIn 0.1s;
+}
+#modal.hide .modalContent {
+	animation: fadeOut 0.1s;
+}
+#modal .modalContent > div {
+	padding: 0 20px;
+	max-height: 90vh;
+	text-align: center;
+	overflow: auto;
+}
+#modal #close {
+	position: absolute;
+	top: 5px;
+	right: 0.3em;
+	font-size: 170%;
+	cursor: pointer;
+}
+@keyframes fadeIn {
+	from { opacity: 0; transform: translate(-50%, -40%); }
+	to { opacity: 1; transform: translate(-50%, -50%); }
+}
+@keyframes fadeOut {
+	from { opacity: 1; transform: translate(-50%, -50%); }
+	to { opacity: 0; transform: translate(-50%, -40%); }
+}
+
+.result {
+	font-size: 120%;
+}
+.point {
+	color: #f00;
+	font-size: 180%;
+	font-weight: bold;
+}
+.note {
+	margin: 20px 0;
+	color: #88a;
+	overflow: hidden;
+}
+.note .active {
+	color: #557;
+	animation: active 1s infinite;
+}
+@keyframes active {
+	0% { transform: scale(1); }
+	50% { transform: scale(1.1); }
+	100% { transform: scale(1); }
+}
+</style>
+<script>
+const questions = [
+	{
+		title: "地図や市街図を見るとき",
+		choice: [
+			"なかなか理解できなくて、結局は誰かに聞いてしまう",
+			"そんなものは見ないで、自分の行きたい道を行く",
+			"地図も市街図も、苦もなく読むことができる"
+		]
+	}, {
+		title: "ラジオの鳴っている台所で、手のこんだ料理を作っている。そこに友人から電話がかかってきた",
+		choice: [
+			"友人と電話で話しながら、料理を続ける。もちろんラジオもそのまま",
+			"ラジオを消して、友人と話しながら料理を続ける",
+			"料理が終わったらかけ直すと言って電話を切る"
+		]
+	}, {
+		title: "あなたの家を初めて訪れる友人に、行きかたを聞かれたら……",
+		choice: [
+			"わかりやすい地図を描いて送る。あるいは誰かほかの人に説明してもらう",
+			"そこに何が見えるかたずね、それを手がかりに道順を説明する",
+			"行きかたを言葉で説明する"
+		]
+	}, {
+		title: "考えや概念を説明するとき、あなたがよくやるのは……",
+		choice: [
+			"ペンと紙を使い、身振り手振りを交えて説明する",
+			"身振り手振りを交えながら、言葉で説明する",
+			"明快でわかりやすい言葉を使って説明する"
+		]
+	}, {
+		title: "映画を見てすごく感動した。家に帰ったあなたは……",
+		choice: [
+			"この映画の場面を思い浮かべる",
+			"感動した場面やセリフについて語る",
+			"その映画の評判をもっぱら引用する"
+		]
+	}, {
+		title: "映画館で座る場所は",
+		choice: [
+			"スクリーンに向かって右側",
+			"どこでもかまわない",
+			"スクリーンに向かって左側",
+		]
+	}, {
+		title: "友人の持っている機械がうまく動かない。貴方は……",
+		choice: [
+			"同情して友人がどんな気持ちかということを話題にする",
+			"治せそうな人を教えてあげる",
+			"仕組みを探り、自分で直そうとする"
+		]
+	}, {
+		title: "初めての場所で、北の方角はどっちですかと尋ねられた。あなたは……",
+		choice: [
+			"わからないと正直に言う",
+			"ちょっと考えて、適当に答える",
+			"確信をもって北の方角を指す"
+		]
+	}, {
+		title: "駐車スペースが見つかったのはいいが、バックでないと入りそうでない",
+		choice: [
+			"ほかの場所を探す",
+			"慎重に車を入れる",
+			"苦もなく車をいれる"
+		]
+	}, {
+		title: "テレビを見ているとき、電話が鳴った。あなたは……",
+		choice: [
+			"テレビはそのままにして電話に出る",
+			"テレビの音量を下げて電話に出る",
+			"テレビを消し、ほかの者に静かにするように言ってから電話に出る"
+		]
+	}, {
+		title: "好きなアーティストの曲を初めて聞いた。あなたは……",
+		choice: [
+			"どんな曲でも、全部または一部を思いだして歌うことができる",
+			"難しい曲でなければ、一部を思いだして歌うことができる",
+			"メロディはなかなか覚えられないが、歌詞の一部なら思い出せる"
+		]
+	}, {
+		title: "予想が当たるのは、もっぱら",
+		choice: [
+			"直感に頼ったとき",
+			"手に入る情報と、｢本能的な｣感覚にもとづいて判断したとき",
+			"事実、統計、データを参考にしたとき"
+		]
+	}, {
+		title: "鍵をどこに置いたか分からなくなった。そのときあなたは……",
+		choice: [
+			"自然に思い出すまで、別のことをする",
+			"別のことをしているが、その間も懸命に思い出そうとする",
+			"自分の足どりを思いおこして、どこに置いたか突きとめようとする"
+		]
+	}, {
+		title: "ホテルの部屋で、遠くからサイレンが聞こえてきた",
+		choice: [
+			"音がどっちから聞こえてくるかまったくわからない",
+			"神経を集中させて聞けば、だいだいの方角はわかる",
+			"音がどの方向から聞こえてくるか即座にわかる"
+		]
+	}, {
+		title: "ある集まりで、初対面7～8人紹介された。翌日あなたは……",
+		choice: [
+			"相手の顔をはっきり思い出せる",
+			"何人かは思い出せる",
+			"顔より名前のほうをよく覚えている"
+		]
+	}, {
+		title: "休みの日。あなたは高原に行きたいが、パートナーは海辺のリゾート地を希望している。高原の方が断然いいと相手に納得してもらうためにはどうする",
+		choice: [
+			"猫なで声で自分の心情を訴える。高原に行けば自分も子供たちも楽しく過ごせて、家族みんなが満足するという",
+			"今回は高原にしてくれたら恩を着る、次は絶対海にするからと言う",
+			"有利な事実を持ち出す。高原の方が近いし、安いし、スポーツやレジャーを楽しむ設備も整っていると主張する"
+		]
+	}, {
+		title: "今日何をするかを考えるとき、あなたは……",
+		choice: [
+			"片づけなければならない用事がひとめでわかるよう、一覧にする",
+			"やるべきことについて考える",
+			"今日会う人、行く場所、やることを思い浮かべる"
+		]
+	}, {
+		title: "友人が悩みを相談しにやってきた。あなたは……",
+		choice: [
+			"同情と理解を示す",
+			"悩みというものは本人が思っているほど深刻ではない、なぜなら・・・と説明する",
+			"問題解決のための合理的な提案とアドバイスをする"
+		]
+	}, {
+		title: "友人同士がひそかに不倫しているようだ。あなたは……",
+		choice: [
+			"かなり早い段階で気づく",
+			"途中で気がつく",
+			"たぶん知らないままだろう"
+		]
+	}, {
+		title: "あなたにとって人生とは結局どういうもの？",
+		choice: [
+			"友人をたくさん作って、みんなと仲良くやっていくこと",
+			"周囲の人たちとうまくやりながら、個人としての自立は守ること",
+			"有意義な目標を実現し、周囲の尊敬をかちとり、名声を手にして出世すること"
+		]
+	}, {
+		title: "あなたにとって望ましい仕事の仕方は",
+		choice: [
+			"メンバーが適宜入れかわるチームで働くこと",
+			"みんなと同じ場所で、ただし自分だけのスペースは確保して仕事すること",
+			"ひとりでやる"
+		]
+	}, {
+		title: "好きな本のジャンルは",
+		choice: [
+			"小説などのフィクション",
+			"新聞や雑誌",
+			"自伝などのノンフィクション"
+		]
+	}, {
+		title: "あなたの買い物の仕方は",
+		choice: [
+			"衝動のおもむくままで、とりわけ｢お買い得｣と言う言葉に弱い",
+			"だいたいの計画は立てるが、あとは成り行き任せ",
+			"表示を念入りに読み、値段を比べる"
+		]
+	}, {
+		title: "寝起きや食事は",
+		choice: [
+			"好きな時間にする",
+			"だいたいの時間は決まっているが、ずれることも多い",
+			"毎日ほぼ決まった時間である"
+		]
+	}, {
+		title: "転職してまもなく、新しい同僚のひとりから自宅に電話がかかってきた。あなたは……",
+		choice: [
+			"相手がすぐわかる",
+			"しばらく話していると誰かわかる",
+			"声だけでは誰かわからない"
+		]
+	}, {
+		title: "口論しているとき、いちばんむかつく態度は？",
+		choice: [
+			"相手の沈黙、あるいは無反応",
+			"あなたの考え方を理解してもらえないこと",
+			"挑戦的な、あるいは鋭い質問やコメント"
+		]
+	}, {
+		title: "学校の漢字テストや作文の課題は……",
+		choice: [
+			"楽々とこなしていた",
+			"どちらかだけ点がよかった",
+			"どちらも苦手だった"
+		]
+	}, {
+		title: "ダンスやジャズダンスをするとき……",
+		choice: [
+			"ステップを覚えないと音楽に｢のれ｣ない",
+			"体を動かすことはできるが、周りの人と合わない",
+			"リズムの人についていけない"
+		]
+	}, {
+		title: "動物の声や音を聞きわけたり、まねたりするのは……",
+		choice: [
+			"かなり得意",
+			"けっこうできる",
+			"まあまあ"
+		]
+	}, {
+		title: "さんざんな目にあったときは、どうしたくなる",
+		choice: [
+			"友人や家族にその日のことをぶちまける",
+			"他の人がどんな日を過ごしたか聞く",
+			"新聞を読んでテレビを見る。話はしない"
+		]
+	}
+];
+
+document.addEventListener("DOMContentLoaded", () => {
+	{
+		const container = document.querySelector(".question");
+		const elemSrc = container.querySelector("li");
+		const elemOrg = elemSrc.cloneNode(true);
+
+		questions.forEach((question, index) => {
+			const elem = index > 0 ? elemOrg.cloneNode(true) : elemSrc;
+
+			elem.querySelector(".qNo").textContent = index + 1;
+			elem.querySelector(".qTotal").textContent = questions.length;
+			elem.querySelector(".qTitle").textContent = question.title;
+
+			const subContainer = elem.querySelector(".choice");
+			const subElemSrc = subContainer.querySelector("li");
+			const subElemOrg = subElemSrc.cloneNode(true);
+			question.choice.forEach((choice, subIndex) => {
+				const elem = subIndex > 0 ? subElemOrg.cloneNode(true) : subElemSrc;
+				const radio = elem.querySelector(".qRadio");
+				radio.name = `q${index}`;
+				switch (subIndex) {
+				case 0:
+					radio.value = "15";
+					break;
+				case 1:
+					radio.value = "5";
+					break;
+				default:
+					radio.value = "-5";
+					break;
+				}
+				elem.querySelector(".qChoice").textContent = choice;
+
+				if (subIndex > 0) subContainer.append(elem);
+			});
+
+			if (index > 0) container.append(elem);
+		});
+	}
+
+	{
+		const elems = document.querySelectorAll("input[name^='q']");
+		const names = [...new Set(
+			[...elems].map(elem => elem.name)
+		)];
+		for (const elem of elems) elem.addEventListener("change", change);
+
+		const modal = document.getElementById("modal");
+		modal.addEventListener("click", e => {
+			if (e.target == modal) close();
+		});
+		modal.addEventListener("animationend", e => {
+			if (e.animationName == "fadeOut") {
+				modal.style.display = "none";
+			}
+		});
+		document.getElementById("close").addEventListener("click", close);
+
+		function change() {
+			let point = 0;
+			for (const name of names) {
+				const elem = document.querySelector(`input[name="${name}"]:checked`);
+				if (elem == null) return;
+				point += parseInt(elem.value);
+			}
+			modal.querySelector(".point").textContent = point;
+			modal.querySelectorAll(".note > div").forEach(e => e.classList.remove("active"));
+			if (point < 0) {
+				modal.querySelector(".point_minus").classList.add("active");
+			} else if (point < 150) {
+				modal.querySelector(".point_0").classList.add("active");
+			} else if (point < 180) {
+				modal.querySelector(".point_150").classList.add("active");
+			} else if (point < 200) {
+				modal.querySelector(".point_180").classList.add("active");
+			} else {
+				modal.querySelector(".point_200").classList.add("active");
+			}
+
+			modal.style.display = "block";
+			modal.classList.remove("hide");
+			modal.classList.add("show");
+		}
+		function close() {
+			modal.classList.remove("show");
+			modal.classList.add("hide");
+		}
+	}
+});
+</script>
+</head>
+
+<body>
+<h1>🧠<span>男脳・女脳テスト</span></h1>
+<div class="desc">自分は男でも脳は女かもしれない。あるいは、逆かもしれない。はたして、どちらなのか下の心理テストで確かめてほしい。※2000-11-23 07:02:10時点の内容です</div>
+<ul class="question">
+	<li>
+		<div class="title">
+			<div>
+				<span class="qNo"></span>/<span class="qTotal"></span>)&nbsp;
+			</div>
+			<div class="qTitle"></div>
+		</div>
+		<ul class="choice">
+			<li>
+				<label>
+					<input type="radio" class="qRadio">
+					<div>
+						<div class="qChoice"></div>
+					</div>
+				</label>
+			</li>
+		</ul>
+	</li>
+</ul>
+
+<div id="modal">
+	<div class="modalContent">
+		<span id="close">×</span>
+		<div>
+			<div class="result">
+				あなたの得点は<span class="point"></span>点です
+			</div>
+			<div class="note">
+				<div class="point_minus">0点未満：男脳</div>
+				<div class="point_0">0～149点：やや男脳</div>
+				<div class="point_150">150～179点：中間</div>
+				<div class="point_180">180～199点：やや女脳</div>
+				<div class="point_200">200点以上：女脳</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
